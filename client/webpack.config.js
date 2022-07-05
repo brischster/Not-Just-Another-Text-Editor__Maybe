@@ -18,32 +18,41 @@ module.exports = () => {
       path: path.resolve(__dirname, "dist"),
     },
     plugins: [
+      // Webpack plugin that generates our html file and injects our bundles.
       new HtmlWebpackPlugin({
-        template: ".index.html",
-        title: "Text Inputs",
+        template: "./index.html",
+        title: "Contact Cards",
       }),
+
+      // Injects our custom service worker
       new InjectManifest({
-        swSrc: "/src-sw.js",
-        swDest: "service-worker.js",
+        swSrc: "./src-sw.js",
+        swDest: "src-sw.js",
       }),
+
+      // Creates a manifest.json file.
       new WebpackPwaManifest({
-        name: "Text",
-        short_name: "Text",
-        description: "Keep track of all your text to edit",
-        background_color: "#272822",
+        fingerprints: false,
+        inject: true,
+        name: "Contact Cards",
+        short_name: "Contact",
+        description: "Never forget your contacts!",
+        background_color: "#225ca3",
+        theme_color: "#225ca3",
         start_url: "./",
-        pulicPath: "./",
+        publicPath: "./",
         icons: [
           {
             src: path.resolve("src/images/logo.png"),
             sizes: [96, 128, 192, 256, 384, 512],
-            destination: path.join("src", "icons"),
+            destination: path.join("assets", "icons"),
           },
         ],
       }),
     ],
 
     module: {
+      // CSS loaders
       rules: [
         {
           test: /\.css$/i,
@@ -52,6 +61,7 @@ module.exports = () => {
         {
           test: /\.m?js$/,
           exclude: /node_modules/,
+          // We use babel-loader in order to use ES6.
           use: {
             loader: "babel-loader",
             options: {
